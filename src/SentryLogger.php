@@ -124,10 +124,6 @@ class SentryLogger extends Logger
 		}
 
 		configureScope(function (Scope $scope) use ($severity) {
-			if ($severity === null) {
-				return;
-			}
-
 			$scope->setLevel($severity);
 			if ($this->identity !== null) {
 				$userFields = [
