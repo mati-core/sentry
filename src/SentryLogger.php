@@ -112,19 +112,19 @@ class SentryLogger extends Logger
 		$response = parent::log($value, $priority);
 		$severity = $this->tracyPriorityToSentrySeverity($priority);
 
-		if (!$severity) {
+		if ($severity === null) {
 			$mappedSeverity = $this->priorityMapping[$priority] ?? null;
 			if ($mappedSeverity) {
 				$severity = new Severity((string) $mappedSeverity);
 			}
 		}
 
-		if (!$severity) {
+		if ($severity = null) {
 			return $response;
 		}
 
 		configureScope(function (Scope $scope) use ($severity) {
-			if (!$severity) {
+			if ($severity = null) {
 				return;
 			}
 
