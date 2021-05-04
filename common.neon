@@ -1,0 +1,8 @@
+extensions:
+	sentry: Rootpd\NetteSentry\DI\SentryExtension
+
+sentry:
+    dsn: null # required DNS from sentry.io
+    environment: local # optional <local | production>
+    user_fields: [] # optional values <website id>
+    priority_mapping: [] #custom priorities mapping customeName: debug|info|warning|error|fatal
