@@ -63,10 +63,6 @@ class SentryExtension extends CompilerExtension
 			$builder->getDefinition($this->prefix('sentryLogger'))
 				->addSetup('setUser', [$builder->getDefinition('security.user')]);
 		}
-		if ($builder->hasDefinition('session.session')) {
-			$builder->getDefinition($this->prefix('sentryLogger'))
-				->addSetup('setSession', [$builder->getDefinition('session.session')]);
-		}
 	}
 
 	/**
