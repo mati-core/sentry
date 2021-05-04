@@ -1,5 +1,5 @@
 extensions:
-	sentry: Rootpd\NetteSentry\DI\SentryExtension
+	sentry: MatiCore\Sentry\SentryExtension
 
 sentry:
     dsn: null # required DNS from sentry.io
