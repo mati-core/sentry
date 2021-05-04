@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace MatiCore\Sentry;
 
 use MatiCore\User\BaseUser;
-use MatiCore\User\IUser;
 use MatiCore\User\StorageIdentity;
-use Nette\Http\Session;
 use Nette\Security\IIdentity;
 use Nette\Security\User;
+use Sentry\ClientBuilder;
 use Sentry\Integration\RequestIntegration;
+use Sentry\SentrySdk;
 use Sentry\Severity;
 use Sentry\State\Scope;
 use Tracy\Debugger;
@@ -19,8 +19,6 @@ use Tracy\ILogger;
 use Tracy\Logger;
 use function Sentry\captureException;
 use function Sentry\captureMessage;
-use function Sentry\configureScope;
-use function Sentry\init;
 
 /**
  * Class SentryLogger
@@ -32,11 +30,6 @@ class SentryLogger extends Logger
 	 * @var IIdentity|null
 	 */
 	private IIdentity|null $identity;
-
-	/**
-	 * @var Session|null
-	 */
-	private Session|null $session;
 
 	/**
 	 * @var array
@@ -54,7 +47,7 @@ class SentryLogger extends Logger
 	 */
 	public function register(string $dsn, string $environment): void
 	{
-		init([
+		$client = ClientBuilder::create([
 			'dsn' => $dsn,
 			'environment' => $environment,
 			'attach_stacktrace' => true,
@@ -62,7 +55,9 @@ class SentryLogger extends Logger
 			'integrations' => [
 				new RequestIntegration(),
 			],
-		]);
+		])->getClient();
+
+		SentrySdk::init()->bindClient($client);
 
 		$this->email = &Debugger::$email;
 		$this->directory = Debugger::$logDirectory;
@@ -95,14 +90,6 @@ class SentryLogger extends Logger
 	}
 
 	/**
-	 * @param Session $session
-	 */
-	public function setSession(Session $session): void
-	{
-		$this->session = $session;
-	}
-
-	/**
 	 * @param mixed $value
 	 * @param string $priority
 	 * @return string|null
@@ -123,7 +110,7 @@ class SentryLogger extends Logger
 			return $response;
 		}
 
-		configureScope(function (Scope $scope) use ($severity) {
+		SentrySdk::getCurrentHub()->configureScope(function (Scope $scope) use ($severity) {
 			$scope->setLevel($severity);
 			if ($this->identity !== null) {
 				$userFields = [
@@ -145,16 +132,6 @@ class SentryLogger extends Logger
 				}
 
 				$scope->setUser($userFields);
-			}
-
-			if ($this->session) {
-				$data = [];
-				foreach ($this->session->getIterator() as $section) {
-					foreach ($this->session->getSection($section)->getIterator() as $key => $val) {
-						$data[$section][$key] = $val;
-					}
-				}
-				$scope->setExtra('session', $data);
 			}
 		});
 
