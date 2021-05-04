@@ -119,12 +119,12 @@ class SentryLogger extends Logger
 			}
 		}
 
-		if ($severity = null) {
+		if ($severity === null) {
 			return $response;
 		}
 
 		configureScope(function (Scope $scope) use ($severity) {
-			if ($severity = null) {
+			if ($severity === null) {
 				return;
 			}
 
