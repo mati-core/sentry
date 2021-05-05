@@ -134,11 +134,12 @@ class SentryLogger extends Logger
 				$scope->setUser($userFields);
 			}
 
-
-			$scope->setContext('app', [
-				'app_name' => 'APP Universe CMS',
-				'app_version' => \MatiCore\Cms\CmsHelper::getCMSVersion(),
-			]);
+			if (class_exists('\MatiCore\Cms\CmsHelper')) {
+				$scope->setContext('app', [
+					'app_name' => 'APP Universe CMS',
+					'app_version' => \MatiCore\Cms\CmsHelper::getCMSVersion(),
+				]);
+			}
 		});
 
 		if ($value instanceof \Throwable) {
