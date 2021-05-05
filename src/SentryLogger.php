@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MatiCore\Sentry;
 
+use MatiCore\Cms\CmsHelper;
 use MatiCore\User\BaseUser;
 use MatiCore\User\StorageIdentity;
 use Nette\Security\IIdentity;
@@ -29,7 +30,7 @@ class SentryLogger extends Logger
 	/**
 	 * @var IIdentity|null
 	 */
-	private IIdentity|null $identity;
+	private IIdentity|null $identity = null;
 
 	/**
 	 * @var array
@@ -134,10 +135,10 @@ class SentryLogger extends Logger
 				$scope->setUser($userFields);
 			}
 
-			if (class_exists('\MatiCore\Cms\CmsHelper')) {
+			if (class_exists(CmsHelper::class)) {
 				$scope->setContext('app', [
 					'app_name' => 'APP Universe CMS',
-					'app_version' => \MatiCore\Cms\CmsHelper::getCMSVersion(),
+					'app_version' => CmsHelper::getCMSVersion(),
 				]);
 			}
 		});
