@@ -45,12 +45,14 @@ class SentryLogger extends Logger
 	/**
 	 * @param string $dsn
 	 * @param string $environment
+	 * @param string $release
 	 */
-	public function register(string $dsn, string $environment): void
+	public function register(string $dsn, string $environment, string $release): void
 	{
 		$client = ClientBuilder::create([
 			'dsn' => $dsn,
 			'environment' => $environment,
+			'release' => $release,
 			'attach_stacktrace' => true,
 			'default_integrations' => false,
 			'integrations' => [

@@ -16,6 +16,7 @@ use Tracy\Debugger;
  */
 class SentryExtension extends CompilerExtension
 {
+
 	/**
 	 * @return Schema
 	 */
@@ -24,6 +25,7 @@ class SentryExtension extends CompilerExtension
 		return Expect::structure([
 			'dsn' => Expect::string()->required(),
 			'environment' => Expect::string()->required()->default('local'),
+			'release' => Expect::string()->required()->default('mati-core-sandbox@1.0'),
 			'user_fields' => Expect::array(),
 			'priority_mapping' => Expect::array(),
 		]);
@@ -39,6 +41,7 @@ class SentryExtension extends CompilerExtension
 				[
 					$this->config->dsn,
 					$this->config->environment,
+					$this->config->release,
 				]
 			)->addSetup(
 				'setUserFields',
